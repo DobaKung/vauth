@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import PageTitle from "../components/PageTitle.vue";
+</script>
+
 <template>
   <div class="container max-w-lg mx-auto px-4 py-4">
     <PageTitle title="Register" />
@@ -22,15 +26,3 @@
     </form>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-import PageTitle from "../components/PageTitle.vue";
-
-export default defineComponent({
-  name: "Register",
-  components: {
-    PageTitle,
-  },
-});
-</script>
