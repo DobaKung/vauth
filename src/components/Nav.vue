@@ -1,5 +1,5 @@
 <template>
-  <nav id="nav" class="text-right font-bold py-6 px-3">
+  <nav id="nav" class="text-right font-bold py-6 px-3 border-t-8 border-accent">
     <router-link
       v-for="link in links"
       :to="link.to"
@@ -25,7 +25,9 @@ export default defineComponent({
     links: [
       { to: "/", text: "Home" },
       { to: "/register", text: "Register" },
-      { to: "/log-in", text: "Log in" },
+      { to: "/verify", text: "Verify" },
+      { to: "/identify", text: "Identify" },
+      { to: "/log-in", text: "Admin" },
     ],
   }),
 });
