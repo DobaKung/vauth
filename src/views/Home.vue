@@ -1,7 +1,7 @@
 <template>
   <div class="container max-w-screen-xl mx-auto px-4 py-4 text-center">
     <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->
-    <h1 class="text-6xl font-bold mt-[160px] mb-3">Voice Matching System</h1>
+    <h1 class="text-6xl font-bold mt-[60px] mb-3">Voice Matching System</h1>
     <h2 class="text-3xl font-bold">Demonstration</h2>
     <router-link
       to="/register"
