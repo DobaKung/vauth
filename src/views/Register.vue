@@ -19,7 +19,7 @@ import PageTitle from "../components/PageTitle.vue";
         class="block border border-solid rounded w-full p-2 mb-4 hover:border-slate-400"
       />
       <button
-        class="mt-2 px-4 py-2 font-semibold bg-green-500 text-white rounded-full shadow-sm"
+        class="mt-8 px-4 py-2 font-semibold bg-primary hover:bg-accent text-white rounded-full shadow-sm"
       >
         Submit
       </button>
