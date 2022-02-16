@@ -25,7 +25,6 @@ export default defineComponent({
     links: [
       { to: "/", text: "Home" },
       { to: "/register", text: "Register" },
-      { to: "/verify", text: "Verify" },
       { to: "/identify", text: "Identify" },
       { to: "/log-in", text: "Admin" },
     ],
