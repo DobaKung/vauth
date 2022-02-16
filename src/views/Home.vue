@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import Footer from "../components/Footer.vue";
+</script>
+
 <template>
   <div class="container max-w-screen-xl mx-auto px-4 py-4 text-center">
     <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->
@@ -20,5 +24,6 @@
       delectus voluptates! Asperiores, nobis. Ipsa dolorum omnis velit eveniet
       iure maiores, minima nihil! Eos enim perspiciatis commodi illo possimus!
     </p>
+    <Footer />
   </div>
 </template>
