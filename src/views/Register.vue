@@ -39,6 +39,7 @@ import Spinner from "../components/Spinner.vue";
           Submit
         </button>
         <Spinner v-show="isLoading" />
+        {{ statusMsg }}
       </div>
     </form>
     <Footer />
@@ -57,10 +58,12 @@ export default defineComponent({
     inputUsername: "",
     recording: "",
     isLoading: false,
+    statusMsg: "",
   }),
   methods: {
     async submit(e: Event) {
       e.preventDefault();
+      this.statusMsg = "";
       this.isLoading = true;
       try {
         let req = {
@@ -69,6 +72,7 @@ export default defineComponent({
           voice: this.recording,
         };
         await c.registerVoice(req);
+        this.statusMsg = "Done";
       } catch (e) {
       } finally {
         this.isLoading = false;
