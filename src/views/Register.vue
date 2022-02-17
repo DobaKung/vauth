@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { defineComponent } from "vue";
 import PageTitle from "../components/PageTitle.vue";
 import MicInput from "../components/MicInput.vue";
 import Footer from "../components/Footer.vue";
+import Spinner from "../components/Spinner.vue";
 </script>
 
 <template>
@@ -12,23 +14,36 @@ import Footer from "../components/Footer.vue";
       <input
         type="text"
         id="field-1"
+        required
         v-model="inputStudentID"
+        :disabled="isLoading"
         class="block border border-solid rounded w-full p-2 mb-4 hover:border-slate-400"
       />
+
       <label for="field-2" class="block">Username</label>
       <input
         type="text"
         id="field-2"
+        required
         v-model="inputUsername"
+        :disabled="isLoading"
         class="block border border-solid rounded w-full p-2 mb-4 hover:border-slate-400"
       />
+
       <MicInput @recording-ready="getRecording" />
+
       <!-- Face input -->
-      <button
-        class="mt-8 px-4 py-2 font-semibold bg-primary hover:bg-accent text-white rounded-full shadow-sm"
-      >
-        Submit
-      </button>
+
+      <div class="mt-8 flex items-center">
+        <button
+          class="mr-4 px-4 py-2 font-semibold bg-primary hover:bg-accent disabled:bg-slate-300 text-white rounded-full shadow-sm"
+          :disabled="isLoading || !recording"
+        >
+          Submit
+        </button>
+        <Spinner v-show="isLoading" />
+        {{ statusMsg }}
+      </div>
     </form>
     <Footer />
   </div>
@@ -36,25 +51,38 @@ import Footer from "../components/Footer.vue";
 
 <script lang="ts">
 import controller from "../controllers/main";
-import { defineComponent } from "vue";
 
 const c = controller.getRegistrationController();
 
 export default defineComponent({
   data: () => ({
+    // input
     inputStudentID: "",
     inputUsername: "",
     recording: "",
+    // response
+    statusMsg: "",
+    // state
+    isLoading: false,
+    isRecordingReady: false,
   }),
   methods: {
     async submit(e: Event) {
       e.preventDefault();
-      let req = {
-        studentID: this.inputStudentID,
-        username: this.inputUsername,
-        voice: this.recording,
-      };
-      await c.registerVoice(req);
+      this.statusMsg = "";
+      this.isLoading = true;
+      try {
+        let req = {
+          studentID: this.inputStudentID,
+          username: this.inputUsername,
+          voice: this.recording,
+        };
+        await c.registerVoice(req);
+        this.statusMsg = "Done";
+      } catch (e) {
+      } finally {
+        this.isLoading = false;
+      }
     },
     getRecording(r: string) {
       this.recording = r;

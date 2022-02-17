@@ -26,7 +26,7 @@ export default defineComponent({
       { to: "/", text: "Home" },
       { to: "/register", text: "Register" },
       { to: "/identify", text: "Identify" },
-      { to: "/log-in", text: "Admin" },
+      // { to: "/log-in", text: "Admin" },
     ],
   }),
 });

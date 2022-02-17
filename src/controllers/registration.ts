@@ -4,6 +4,9 @@ export interface IRegistrationController {
 
 export class RegistrationController implements IRegistrationController {
   public async registerVoice(req: RegistrationRequest) {
-    console.log(req);
+    const promise = new Promise((resolve, reject) => {
+      setTimeout(() => resolve(true), 500);
+    });
+    await promise;
   }
 }
