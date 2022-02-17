@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { defineComponent } from "vue";
 import PageTitle from "../components/PageTitle.vue";
 import MicInput from "../components/MicInput.vue";
 import Footer from "../components/Footer.vue";
@@ -13,6 +14,7 @@ import Spinner from "../components/Spinner.vue";
       <input
         type="text"
         id="field-1"
+        required
         v-model="inputStudentID"
         :disabled="isLoading"
         class="block border border-solid rounded w-full p-2 mb-4 hover:border-slate-400"
@@ -22,6 +24,7 @@ import Spinner from "../components/Spinner.vue";
       <input
         type="text"
         id="field-2"
+        required
         v-model="inputUsername"
         :disabled="isLoading"
         class="block border border-solid rounded w-full p-2 mb-4 hover:border-slate-400"
@@ -34,7 +37,7 @@ import Spinner from "../components/Spinner.vue";
       <div class="mt-8 flex items-center">
         <button
           class="mr-4 px-4 py-2 font-semibold bg-primary hover:bg-accent disabled:bg-slate-300 text-white rounded-full shadow-sm"
-          :disabled="isLoading"
+          :disabled="isLoading || !recording"
         >
           Submit
         </button>
@@ -48,17 +51,20 @@ import Spinner from "../components/Spinner.vue";
 
 <script lang="ts">
 import controller from "../controllers/main";
-import { defineComponent } from "vue";
 
 const c = controller.getRegistrationController();
 
 export default defineComponent({
   data: () => ({
+    // input
     inputStudentID: "",
     inputUsername: "",
     recording: "",
-    isLoading: false,
+    // response
     statusMsg: "",
+    // state
+    isLoading: false,
+    isRecordingReady: false,
   }),
   methods: {
     async submit(e: Event) {
