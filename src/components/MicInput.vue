@@ -17,7 +17,7 @@ defineEmits(["recording-ready", "processing"]);
     <button
       :disabled="!isRecording"
       v-show="isMediaReady"
-      @click="processRecording"
+      @click="setProcessing"
       class="px-2 py-1 mx-1 bg-slate-500 hover:bg-accent disabled:bg-slate-300 text-white rounded-full"
     >
       Stop
@@ -28,6 +28,7 @@ defineEmits(["recording-ready", "processing"]);
 
 <script lang="ts">
 let mediaRecorder: MediaRecorder;
+let chunks: Array<Blob>;
 export default defineComponent({
   data() {
     return {
@@ -35,6 +36,7 @@ export default defineComponent({
       isProcessing: false,
       isMediaReady: false,
       errMsg: "",
+      audioBlob: new Blob(),
     };
   },
   methods: {
@@ -46,7 +48,15 @@ export default defineComponent({
         .getUserMedia({ audio: true })
         .then((stream) => {
           this.isMediaReady = true;
-          mediaRecorder = new MediaRecorder(stream);
+          mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/wav" });
+          mediaRecorder.ondataavailable = (e) => {
+            chunks.push(e.data);
+          };
+          mediaRecorder.onstop = () => {
+            console.log("recording stopped");
+            this.audioBlob = new Blob(chunks, { type: "audio/wav" });
+            this.setRecordingReady();
+          };
         })
         .catch((err) => {
           console.error("getUserMedia error: " + err);
@@ -54,26 +64,19 @@ export default defineComponent({
         });
     },
     setProcessing() {
+      mediaRecorder.stop();
       this.isProcessing = true;
       this.isRecording = false;
       this.$emit("processing");
     },
     setIsRecording(e: Event) {
       e.preventDefault();
+      mediaRecorder.start();
       this.isRecording = true;
     },
     setRecordingReady() {
       this.isProcessing = false;
-      this.$emit("recording-ready", "replace with recording data");
-    },
-    async processRecording(e: Event) {
-      e.preventDefault();
-      this.setProcessing();
-      const p = new Promise((resolve) => {
-        setTimeout(() => resolve(true), 500);
-      });
-      await p;
-      this.setRecordingReady();
+      this.$emit("recording-ready", this.audioBlob);
     },
   },
   mounted() {
