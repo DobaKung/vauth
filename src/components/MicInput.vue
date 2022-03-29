@@ -28,7 +28,6 @@ defineEmits(["recording-ready", "processing"]);
 
 <script lang="ts">
 let mediaRecorder: MediaRecorder;
-let chunks: Array<Blob>;
 export default defineComponent({
   data() {
     return {
@@ -36,7 +35,6 @@ export default defineComponent({
       isProcessing: false,
       isMediaReady: false,
       errMsg: "",
-      audioBlob: new Blob(),
     };
   },
   methods: {
@@ -48,14 +46,15 @@ export default defineComponent({
         .getUserMedia({ audio: true })
         .then((stream) => {
           this.isMediaReady = true;
+          let chunks: Array<Blob>;
           mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/wav" });
           mediaRecorder.ondataavailable = (e) => {
             chunks.push(e.data);
           };
           mediaRecorder.onstop = () => {
             console.log("recording stopped");
-            this.audioBlob = new Blob(chunks, { type: "audio/wav" });
-            this.setRecordingReady();
+            const audioBlob = new Blob(chunks, { type: "audio/wav" });
+            this.setRecordingReady(audioBlob);
           };
         })
         .catch((err) => {
@@ -74,9 +73,9 @@ export default defineComponent({
       mediaRecorder.start();
       this.isRecording = true;
     },
-    setRecordingReady() {
+    setRecordingReady(audioBlob: Blob) {
       this.isProcessing = false;
-      this.$emit("recording-ready", this.audioBlob);
+      this.$emit("recording-ready", audioBlob);
     },
   },
   mounted() {
