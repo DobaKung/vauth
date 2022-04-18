@@ -28,6 +28,8 @@ defineEmits(["recording-ready", "processing"]);
 
 <script lang="ts">
 let mediaRecorder: MediaRecorder;
+const audioMime = "audio/ogg";
+
 export default defineComponent({
   data() {
     return {
@@ -46,14 +48,14 @@ export default defineComponent({
         .getUserMedia({ audio: true })
         .then((stream) => {
           this.isMediaReady = true;
-          let chunks: Array<Blob>;
-          mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/wav" });
+          let chunks: Array<Blob> = [];
+          mediaRecorder = new MediaRecorder(stream);
           mediaRecorder.ondataavailable = (e) => {
             chunks.push(e.data);
           };
           mediaRecorder.onstop = () => {
             console.log("recording stopped");
-            const audioBlob = new Blob(chunks, { type: "audio/wav" });
+            const audioBlob = new Blob(chunks, { type: audioMime });
             this.setRecordingReady(audioBlob);
           };
         })

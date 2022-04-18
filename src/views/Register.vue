@@ -59,7 +59,7 @@ export default defineComponent({
     // input
     inputStudentID: "",
     inputUsername: "",
-    recording: "",
+    recording: new Blob(),
     // response
     statusMsg: "",
     // state
@@ -72,20 +72,32 @@ export default defineComponent({
       this.statusMsg = "";
       this.isLoading = true;
       try {
-        let req = {
+        if (this.recording.size == 0) {
+          throw new Error("No sound recorded");
+        }
+
+        await c.registerVoice({
           studentID: this.inputStudentID,
           username: this.inputUsername,
           voice: this.recording,
-        };
-        await c.registerVoice(req);
+        });
+
+        this.clearInputs();
         this.statusMsg = "Done";
       } catch (e) {
+        console.error(e);
+        this.statusMsg = (e as Error)?.message;
       } finally {
         this.isLoading = false;
       }
     },
-    getRecording(r: string) {
-      this.recording = r;
+    getRecording(audio: Blob) {
+      this.recording = audio;
+    },
+    clearInputs() {
+      this.inputStudentID = "";
+      this.inputUsername = "";
+      this.recording = new Blob();
     },
   },
 });
