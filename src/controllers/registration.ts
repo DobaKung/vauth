@@ -16,7 +16,8 @@ export interface IRegistrationController {
 export class RegistrationController implements IRegistrationController {
   public async registerVoice(req: RegistrationRequest) {
     const voiceBuffer = await req.voice.arrayBuffer();
-    const voiceIntArr = new Int8Array(voiceBuffer);
+    const voiceIntArr = new Uint8Array(voiceBuffer);
+    console.debug(voiceIntArr);
 
     const reqBody: APIRegistrationRequest = {
       studID: req.studentID,
