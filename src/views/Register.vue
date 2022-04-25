@@ -93,6 +93,8 @@ export default defineComponent({
     },
     getRecording(audio: Blob) {
       this.recording = audio;
+      const blobURL = URL.createObjectURL(audio);
+      console.debug(blobURL);
     },
     clearInputs() {
       this.inputStudentID = "";
