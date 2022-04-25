@@ -28,7 +28,7 @@ defineEmits(["recording-ready", "processing"]);
 
 <script lang="ts">
 let mediaRecorder: MediaRecorder;
-const audioMime = "audio/ogg";
+const audioMime = "audio/webm;codecs=pcm";
 
 export default defineComponent({
   data() {
@@ -49,7 +49,7 @@ export default defineComponent({
         .then((stream) => {
           this.isMediaReady = true;
           let chunks: Array<Blob> = [];
-          mediaRecorder = new MediaRecorder(stream);
+          mediaRecorder = new MediaRecorder(stream, { mimeType: audioMime });
           mediaRecorder.ondataavailable = (e) => {
             chunks.push(e.data);
           };
