@@ -28,7 +28,7 @@ defineEmits(["recording-ready", "processing"]);
 
 <script lang="ts">
 let mediaRecorder: MediaRecorder;
-const audioMime = "audio/webm;codecs=pcm";
+const mimeType = "audio/webm;codecs=opus";
 
 export default defineComponent({
   data() {
@@ -49,13 +49,16 @@ export default defineComponent({
         .then((stream) => {
           this.isMediaReady = true;
           let chunks: Array<Blob> = [];
-          mediaRecorder = new MediaRecorder(stream, { mimeType: audioMime });
+          mediaRecorder = new MediaRecorder(stream, {
+            mimeType: mimeType,
+            audioBitsPerSecond: 768_000,
+          });
           mediaRecorder.ondataavailable = (e) => {
             chunks.push(e.data);
           };
           mediaRecorder.onstop = () => {
             console.log("recording stopped");
-            const audioBlob = new Blob(chunks, { type: audioMime });
+            const audioBlob = new Blob(chunks, { type: mimeType });
             this.setRecordingReady(audioBlob);
           };
         })
