@@ -15,22 +15,17 @@ export interface IRegistrationController {
 
 export class RegistrationController implements IRegistrationController {
   public async registerVoice(req: RegistrationRequest) {
-    const voiceBuffer = await req.voice.arrayBuffer();
-    const voiceIntArr = new Uint8Array(voiceBuffer);
-    console.debug(voiceIntArr);
-
-    const reqBody: APIRegistrationRequest = {
-      studID: req.studentID,
-      userName: req.username,
-      // TODO: Implement
-      faceImg: "test",
-      rawAudio: Array.from(voiceIntArr),
-    };
+    const formData = new FormData();
+    formData.append("studID", req.studentID);
+    formData.append("userName", req.username);
+    formData.append("rawAudio", req.voice);
+    // TODO: Implement
+    formData.append("faceImg", "test");
 
     const result = await fetch(
       new Request(`${import.meta.env.VITE_API_HOST}/voice-samples`, {
         method: "POST",
-        body: JSON.stringify(reqBody),
+        body: formData,
       })
     );
 
