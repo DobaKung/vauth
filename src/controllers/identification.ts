@@ -1,3 +1,11 @@
+type APIIdentificationResponse = {
+  error: string;
+  user: {
+    studID: string;
+  };
+  similarity: number;
+};
+
 export interface IIdentificationController {
   getVoiceOwner: (
     req: IdentificationRequest
@@ -8,15 +16,24 @@ export class IdentificationController implements IIdentificationController {
   public async getVoiceOwner(
     req: IdentificationRequest
   ): Promise<IdentificationResponse> {
-    // TODO: Implement
-    const p = new Promise((resolve) => {
-      setTimeout(() => resolve(true), 500);
-    });
-    await p;
+    const formData = new FormData();
+    formData.append("rawAudio", req.voice);
+
+    const result = await fetch(
+      new Request(`${import.meta.env.VITE_API_HOST}/identify`, {
+        method: "POST",
+        body: formData,
+      })
+    );
+
+    const resBody: APIIdentificationResponse = await result.json();
+
+    if (result.status != 200) {
+      throw new Error(resBody.error);
+    }
 
     return {
-      studentId: "12345",
-      username: "doba",
+      studentId: resBody.user.studID,
     };
   }
 }
