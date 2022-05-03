@@ -28,9 +28,10 @@ import IdentificationResult from "../components/IdentificationResult.vue";
 
     <IdentificationResult
       :student-id="studentId"
-      :username="username"
       v-show="!isProcessing && !isSubmitting && studentId"
     />
+
+    <p>{{ errMsg }}</p>
 
     <Footer />
   </div>
@@ -44,10 +45,11 @@ const controller = Controller.getIdentificationController();
 export default defineComponent({
   data: () => ({
     // input
-    recording: "",
+    recording: new Blob(),
     // response
     studentId: "",
     username: "",
+    errMsg: "",
     // state
     isSubmitting: false,
     isProcessing: false,
@@ -59,19 +61,21 @@ export default defineComponent({
     setStatusReady() {
       this.isProcessing = false;
     },
-    getRecording(r: string) {
+    getRecording(r: Blob) {
       this.recording = r;
+      const blobURL = URL.createObjectURL(r);
+      console.debug(blobURL);
       this.setStatusReady();
       this.submitRecording(this.recording);
     },
-    async submitRecording(recording: string) {
+    async submitRecording(recording: Blob) {
+      this.errMsg = "";
       this.isSubmitting = true;
       try {
         const res = await controller.getVoiceOwner({ voice: recording });
         this.studentId = res.studentId;
-        this.username = res.username;
       } catch (e) {
-        // TODO: Implement submitRecording.catch
+        this.errMsg = (e as Error).message;
       } finally {
         this.isSubmitting = false;
       }

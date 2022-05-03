@@ -1,8 +1,7 @@
 type IdentificationRequest = {
-  voice: string;
+  voice: Blob;
 };
 
 type IdentificationResponse = {
   studentId: string;
-  username: string;
 };
