@@ -28,7 +28,7 @@ defineEmits(["recording-ready", "processing"]);
 
 <script lang="ts">
 let mediaRecorder: MediaRecorder;
-const mimeType = "audio/webm;codecs=opus";
+const audioBitsPerSecond = 128_000;
 
 export default defineComponent({
   data() {
@@ -36,6 +36,7 @@ export default defineComponent({
       isRecording: false,
       isProcessing: false,
       isMediaReady: false,
+      audioChunks: new Array(),
       errMsg: "",
     };
   },
@@ -44,27 +45,30 @@ export default defineComponent({
       return navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
     },
     initMedia() {
+      const mimeType = this.getSupportedMimeType();
       navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
-          this.isMediaReady = true;
-          let chunks: Array<Blob> = [];
           mediaRecorder = new MediaRecorder(stream, {
-            mimeType: mimeType,
-            audioBitsPerSecond: 768_000,
+            mimeType,
+            audioBitsPerSecond,
           });
           mediaRecorder.ondataavailable = (e) => {
-            chunks.push(e.data);
+            this.audioChunks.push(e.data);
           };
           mediaRecorder.onstop = () => {
             console.log("recording stopped");
-            const audioBlob = new Blob(chunks, { type: mimeType });
+            const audioBlob = new Blob(this.audioChunks, { type: mimeType });
             this.setRecordingReady(audioBlob);
           };
+
+          this.isMediaReady = true;
         })
         .catch((err) => {
           console.error("getUserMedia error: " + err);
-          this.errMsg = "Cannot initialise media";
+          this.errMsg = `Cannot initialise media ${
+            mimeType ? "with " + mimeType : ""
+          }`;
         });
     },
     setProcessing() {
@@ -75,12 +79,22 @@ export default defineComponent({
     },
     setIsRecording(e: Event) {
       e.preventDefault();
+      this.audioChunks = new Array();
       mediaRecorder.start();
       this.isRecording = true;
     },
     setRecordingReady(audioBlob: Blob) {
       this.isProcessing = false;
       this.$emit("recording-ready", audioBlob);
+    },
+    getSupportedMimeType(): string {
+      const mimeTypes = ["audio/mp4", "audio/webm"];
+      for (let i = 0; i < mimeTypes.length; i++) {
+        if (MediaRecorder.isTypeSupported(mimeTypes[i])) {
+          return mimeTypes[i];
+        }
+      }
+      return "";
     },
   },
   mounted() {
