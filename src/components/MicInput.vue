@@ -28,7 +28,7 @@ defineEmits(["recording-ready", "processing"]);
 
 <script lang="ts">
 let mediaRecorder: MediaRecorder;
-const mimeType = "audio/webm;codecs=opus";
+const audioBitsPerSecond = 128_000;
 
 export default defineComponent({
   data() {
@@ -45,14 +45,13 @@ export default defineComponent({
       return navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
     },
     initMedia() {
+      const mimeType = this.getSupportedMimeType();
       navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
-          this.isMediaReady = true;
-
           mediaRecorder = new MediaRecorder(stream, {
-            mimeType: mimeType,
-            audioBitsPerSecond: 768_000,
+            mimeType,
+            audioBitsPerSecond,
           });
           mediaRecorder.ondataavailable = (e) => {
             this.audioChunks.push(e.data);
@@ -62,10 +61,14 @@ export default defineComponent({
             const audioBlob = new Blob(this.audioChunks, { type: mimeType });
             this.setRecordingReady(audioBlob);
           };
+
+          this.isMediaReady = true;
         })
         .catch((err) => {
           console.error("getUserMedia error: " + err);
-          this.errMsg = "Cannot initialise media";
+          this.errMsg = `Cannot initialise media ${
+            mimeType ? "with " + mimeType : ""
+          }`;
         });
     },
     setProcessing() {
@@ -83,6 +86,15 @@ export default defineComponent({
     setRecordingReady(audioBlob: Blob) {
       this.isProcessing = false;
       this.$emit("recording-ready", audioBlob);
+    },
+    getSupportedMimeType(): string {
+      const mimeTypes = ["audio/mp4", "audio/webm"];
+      for (let i = 0; i < mimeTypes.length; i++) {
+        if (MediaRecorder.isTypeSupported(mimeTypes[i])) {
+          return mimeTypes[i];
+        }
+      }
+      return "";
     },
   },
   mounted() {
