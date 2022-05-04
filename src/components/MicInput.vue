@@ -36,6 +36,7 @@ export default defineComponent({
       isRecording: false,
       isProcessing: false,
       isMediaReady: false,
+      audioChunks: new Array(),
       errMsg: "",
     };
   },
@@ -48,17 +49,17 @@ export default defineComponent({
         .getUserMedia({ audio: true })
         .then((stream) => {
           this.isMediaReady = true;
-          let chunks: Array<Blob> = [];
+
           mediaRecorder = new MediaRecorder(stream, {
             mimeType: mimeType,
             audioBitsPerSecond: 768_000,
           });
           mediaRecorder.ondataavailable = (e) => {
-            chunks.push(e.data);
+            this.audioChunks.push(e.data);
           };
           mediaRecorder.onstop = () => {
             console.log("recording stopped");
-            const audioBlob = new Blob(chunks, { type: mimeType });
+            const audioBlob = new Blob(this.audioChunks, { type: mimeType });
             this.setRecordingReady(audioBlob);
           };
         })
@@ -75,6 +76,7 @@ export default defineComponent({
     },
     setIsRecording(e: Event) {
       e.preventDefault();
+      this.audioChunks = new Array();
       mediaRecorder.start();
       this.isRecording = true;
     },
