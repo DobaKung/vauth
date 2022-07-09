@@ -1,7 +1,7 @@
 type APIIdentificationResponse = {
   error: string;
   user: {
-    studID: string;
+    userName: string;
   };
   similarity: number;
 };
@@ -33,7 +33,7 @@ export class IdentificationController implements IIdentificationController {
     }
 
     return {
-      studentId: resBody.user.studID,
+      username: resBody.user.userName,
     };
   }
 }
