@@ -11,10 +11,10 @@ import Spinner from "../components/Spinner.vue";
     <PageTitle title="Register" />
     <form class="text-slate-900" v-on:submit="submit">
 
-      <label for="field-2" class="block">Username</label>
+      <label for="field-1" class="block">Username</label>
       <input
         type="text"
-        id="field-2"
+        id="field-1"
         required
         v-model="inputUsername"
         :disabled="isLoading"
@@ -48,7 +48,7 @@ const c = controller.getRegistrationController();
 export default defineComponent({
   data: () => ({
     // input
-    inputStudentID: "",
+    // inputStudentID: "",
     inputUsername: "",
     recording: new Blob(),
     // response
@@ -87,7 +87,7 @@ export default defineComponent({
       console.debug(blobURL);
     },
     clearInputs() {
-      this.inputStudentID = "";
+      // this.inputStudentID = "";
       this.inputUsername = "";
       this.recording = new Blob();
     },
