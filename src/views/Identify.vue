@@ -71,6 +71,7 @@ export default defineComponent({
     },
     async submitRecording(recording: Blob) {
       this.username = "";
+      this.similarity = 0;
       this.errMsg = "";
       this.isSubmitting = true;
       try {
