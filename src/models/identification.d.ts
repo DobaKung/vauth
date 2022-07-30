@@ -4,4 +4,5 @@ type IdentificationRequest = {
 
 type IdentificationResponse = {
   username: string;
+  similarity: number;
 };

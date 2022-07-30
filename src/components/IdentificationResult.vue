@@ -1,5 +1,6 @@
 <script setup lang="ts">
 defineProps({
+  similarity: Number,
   username: String,
 });
 </script>
@@ -9,6 +10,12 @@ defineProps({
     Identified as student ID:
     <code class="text-accent">
       {{ username }}
+    </code>
+  </p>
+  <p>
+    Similarity:
+    <code class="text-accent">
+      {{ similarity }}
     </code>
   </p>
 </template>

@@ -27,6 +27,7 @@ import IdentificationResult from "../components/IdentificationResult.vue";
     </div>
 
     <IdentificationResult
+      :similarity="similarity"
       :username="username"
       v-show="!isProcessing && !isSubmitting && username"
     />
@@ -47,7 +48,7 @@ export default defineComponent({
     // input
     recording: new Blob(),
     // response
-    studentId: "",
+    similarity: 0,
     username: "",
     errMsg: "",
     // state
@@ -75,6 +76,7 @@ export default defineComponent({
       try {
         const res = await controller.getVoiceOwner({ voice: recording });
         this.username = res.username;
+        this.similarity = res.similarity;
       } catch (e) {
         this.errMsg = (e as Error).message;
       } finally {

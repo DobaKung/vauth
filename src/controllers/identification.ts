@@ -34,6 +34,7 @@ export class IdentificationController implements IIdentificationController {
 
     return {
       username: resBody.user.userName,
+      similarity: resBody.similarity,
     };
   }
 }
