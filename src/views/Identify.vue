@@ -27,8 +27,8 @@ import IdentificationResult from "../components/IdentificationResult.vue";
     </div>
 
     <IdentificationResult
-      :student-id="studentId"
-      v-show="!isProcessing && !isSubmitting && studentId"
+      :username="username"
+      v-show="!isProcessing && !isSubmitting && username"
     />
 
     <p>{{ errMsg }}</p>
@@ -73,7 +73,7 @@ export default defineComponent({
       this.isSubmitting = true;
       try {
         const res = await controller.getVoiceOwner({ voice: recording });
-        this.studentId = res.studentId;
+        this.username = res.username;
       } catch (e) {
         this.errMsg = (e as Error).message;
       } finally {

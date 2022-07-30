@@ -1,5 +1,4 @@
 type APIRegistrationRequest = {
-  studID: string;
   userName: string;
   faceImg: string;
   rawAudio: Array<number>;
@@ -16,7 +15,6 @@ export interface IRegistrationController {
 export class RegistrationController implements IRegistrationController {
   public async registerVoice(req: RegistrationRequest) {
     const formData = new FormData();
-    formData.append("studID", req.studentID);
     formData.append("userName", req.username);
     formData.append("rawAudio", req.voice);
     // TODO: Implement

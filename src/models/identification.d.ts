@@ -3,5 +3,5 @@ type IdentificationRequest = {
 };
 
 type IdentificationResponse = {
-  studentId: string;
+  username: string;
 };
