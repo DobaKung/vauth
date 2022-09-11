@@ -3,6 +3,6 @@ type IdentificationRequest = {
 };
 
 type IdentificationResponse = {
-  username: string;
+  user: {userName: string};
   similarity: number;
-};
+}[]

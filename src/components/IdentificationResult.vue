@@ -1,21 +1,15 @@
 <script setup lang="ts">
+import {APIIdentificationResponse} from "../controllers/identification"
 defineProps({
-  similarity: Number,
-  username: String,
-});
+  items: Array
+  });
 </script>
 
 <template>
   <p>
-    Identified as student ID:
-    <code class="text-accent">
-      {{ username }}
-    </code>
-  </p>
-  <p>
-    Similarity:
-    <code class="text-accent">
-      {{ similarity }}
-    </code>
+    Identified as Username:
+    <code class="text-accent" v-for="item in items">
+      {{ item.user.userName }} with score {{ item.similarity }}. <br/>
+    </code> 
   </p>
 </template>

@@ -26,10 +26,11 @@ import IdentificationResult from "../components/IdentificationResult.vue";
       <Spinner />
     </div>
 
+      <!-- :similarity="similarity" -->
+      <!-- :username="username" -->
     <IdentificationResult
-      :similarity="similarity"
-      :username="username"
-      v-show="!isProcessing && !isSubmitting && username"
+      :items="resBody"
+      v-show="!isProcessing && !isSubmitting && resBody"
     />
 
     <p>{{ errMsg }}</p>
@@ -48,9 +49,8 @@ export default defineComponent({
     // input
     recording: new Blob(),
     // response
-    similarity: 0,
-    username: "",
     errMsg: "",
+    resBody: new Array(),
     // state
     isSubmitting: false,
     isProcessing: false,
@@ -70,14 +70,15 @@ export default defineComponent({
       this.submitRecording(this.recording);
     },
     async submitRecording(recording: Blob) {
-      this.username = "";
-      this.similarity = 0;
       this.errMsg = "";
       this.isSubmitting = true;
+      this.resBody = [];
       try {
         const res = await controller.getVoiceOwner({ voice: recording });
-        this.username = res.username;
-        this.similarity = res.similarity;
+        // this.username = res.user.username;
+        // this.similarity = res;
+        this.resBody = res
+        console.log(this.resBody)
       } catch (e) {
         this.errMsg = (e as Error).message;
       } finally {

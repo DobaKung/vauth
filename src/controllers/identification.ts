@@ -1,10 +1,11 @@
-type APIIdentificationResponse = {
-  error: string;
+export type APIIdentificationResponse = Array<{
   user: {
     userName: string;
   };
   similarity: number;
-};
+}>;
+
+type APIIdentificationError = {error: string};
 
 export interface IIdentificationController {
   getVoiceOwner: (
@@ -26,15 +27,13 @@ export class IdentificationController implements IIdentificationController {
       })
     );
 
-    const resBody: APIIdentificationResponse = await result.json();
 
     if (result.status != 200) {
-      throw new Error(resBody.error);
+      const resError: APIIdentificationError = await result.json();
+      throw new Error(resError.error);
     }
 
-    return {
-      username: resBody.user.userName,
-      similarity: resBody.similarity,
-    };
+    const resBody: APIIdentificationResponse = await result.json();
+    return resBody;
   }
 }
